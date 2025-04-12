@@ -1,0 +1,143 @@
+<div class="container mx-auto px-4 py-8">
+  <!-- Main Calendar Section -->
+  <div class="grid lg:grid-cols-3 gap-6 max-w-full">
+    <div class="lg:col-span-2 min-w-0">
+      <div class="bg-white rounded-2xl shadow-md p-6 overflow-hidden">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-900">Production Calendar</h2>
+          <div class="flex space-x-4">
+            <%= link_to new_order_path, class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-150 flex items-center" do %>
+              <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+              New Order
+            <% end %>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <div class="inline-flex items-center space-x-4 p-2 bg-gray-50 rounded-lg">
+            <span class="inline-flex items-center px-3 py-1 rounded-md bg-white shadow-sm">
+              <span class="w-3 h-3 rounded-full bg-yellow-400 mr-2"></span>
+              <span class="text-sm font-medium">Pending</span>
+            </span>
+            <span class="inline-flex items-center px-3 py-1 rounded-md bg-white shadow-sm">
+              <span class="w-3 h-3 rounded-full bg-blue-400 mr-2"></span>
+              <span class="text-sm font-medium">Confirmed</span>
+            </span>
+            <span class="inline-flex items-center px-3 py-1 rounded-md bg-white shadow-sm">
+              <span class="w-3 h-3 rounded-full bg-green-400 mr-2"></span>
+              <span class="text-sm font-medium">Delivered</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="simple-calendar overflow-x-auto">
+          <%= month_calendar(events: @orders, 
+                           table: { class: "w-full border-collapse bg-white table-fixed" },
+                           header: { class: "text-center py-2 border-b bg-gray-50" },
+                           previous_link: -> { tag.div(class: "flex items-center text-gray-600 hover:text-gray-900") { |_| raw("&larr; Prev") } },
+                           next_link: -> { tag.div(class: "flex items-center text-gray-600 hover:text-gray-900") { |_| raw("Next &rarr;") } }) do |date, orders| %>
+            
+            <div class="relative min-h-[8rem] p-2 border border-gray-200 
+                        <%= date == Date.today ? 'bg-blue-50 ring-2 ring-blue-200' : 
+                            date.month != Date.today.month ? 'bg-gray-50' : '' %>">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-semibold <%= date.sunday? ? 'text-red-600' : 
+                                                      date.saturday? ? 'text-blue-600' : 
+                                                      'text-gray-700' %>">
+                  <%= date.day %>
+                </span>
+                <% if date == Date.today %>
+                  <span class="px-2 py-0.5 text-xs bg-blue-100 text-blue-800 rounded-full">Today</span>
+                <% end %>
+              </div>
+              
+              <div class="space-y-1 overflow-y-auto max-h-24 overflow-x-hidden">
+                <% orders.each do |order| %>
+                  <%= link_to order_path(order), class: "block" do %>
+                    <div class="text-xs p-1.5 rounded-lg shadow-sm #{order_status_color(order)} 
+                              hover:opacity-90 transition-opacity duration-150 cursor-pointer truncate"
+                         title="<%= order_tooltip(order) %>">
+                      <div class="flex items-center">
+                        <span class="truncate"><%= order.client.name %></span>
+                        <span class="ml-auto text-xs font-medium">
+                          <%= number_to_currency(order.total_price, precision: 0) %>
+                        </span>
+                      </div>
+                    </div>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Deliveries Sidebar -->
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-2xl shadow-md p-6 sticky top-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-semibold text-gray-900">
+            <span class="inline-block mr-2">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </span>
+            Upcoming Deliveries
+          </h3>
+          <span class="text-sm text-gray-500">Next 5 days</span>
+        </div>
+        
+        <div class="space-y-3 h-[32rem] overflow-y-auto pr-2 custom-scrollbar">
+          <% @upcoming_deliveries.each do |order| %>
+            <%= link_to order_path(order), class: "block" do %>
+              <div class="p-4 rounded-lg border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all duration-150">
+                <div class="flex items-start justify-between">
+                  <div class="flex-grow">
+                    <h4 class="font-medium text-gray-900 mb-1"><%= order.client.name %></h4>
+                    <div class="flex items-center text-sm text-gray-500 space-x-3">
+                      <span class="flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <%= order.delivery_date.strftime("%b %d") %>
+                      </span>
+                      <span class="flex items-center font-medium text-gray-900">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <%= number_to_currency(order.total_price) %>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="<%= delivery_status_badge(order) %> ml-4">
+                    <%= order.status.capitalize %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+
+        <style>
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 2px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 2px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+          }
+        </style>
+      </div>
+    </div>
+  </div>
+</div> 

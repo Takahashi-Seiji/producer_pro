@@ -1,0 +1,149 @@
+<div class="container mx-auto px-4 py-8">
+  <% if notice.present? %>
+    <div class="mb-6 rounded-lg bg-green-50 p-4 text-sm text-green-600">
+      <%= notice %>
+    </div>
+  <% end %>
+
+  <div class="bg-white rounded-2xl shadow-md">
+    <!-- Header -->
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center">
+          <div class="w-16 h-16 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 mr-4">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">
+              <%= @raw_material.name %>
+            </h1>
+            <p class="mt-1 text-sm text-gray-500">
+              <%= @raw_material.unit.titleize %> • <%= number_to_currency(@raw_material.cost_per_unit) %> per unit
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="px-3 py-1 rounded-full <%= @raw_material.stock > 10 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %> text-sm font-medium">
+            <%= @raw_material.stock %> <%= @raw_material.unit.pluralize(@raw_material.stock) %> in stock
+          </span>
+          <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">
+            <%= number_to_currency(@raw_material.cost_per_unit) %> per <%= @raw_material.unit %>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Material Details -->
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Material Details</h2>
+          <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+            <div>
+              <p class="text-sm text-gray-500">Unit</p>
+              <p class="font-medium text-gray-900"><%= @raw_material.unit %></p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Cost</p>
+              <p class="font-medium text-gray-900"><%= number_to_currency(@raw_material.cost_per_unit) %> per <%= @raw_material.unit %></p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Stock Level</p>
+              <div class="flex items-center mt-1">
+                <div class="flex-grow">
+                  <div class="h-2 rounded-full bg-gray-200">
+                    <div class="h-2 rounded-full <%= @raw_material.stock > 10 ? 'bg-green-500' : 'bg-red-500' %>" 
+                         style="width: <%= [(@raw_material.stock.to_f / 20) * 100, 100].min %>%"></div>
+                  </div>
+                </div>
+                <span class="ml-2 text-sm font-medium text-gray-900"><%= @raw_material.stock %> <%= @raw_material.unit.pluralize(@raw_material.stock) %></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Usage History -->
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Usage History</h2>
+          <div class="bg-gray-50 rounded-lg p-4">
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white rounded-lg p-3 text-center">
+                  <p class="text-sm text-gray-500">Total Products</p>
+                  <p class="text-2xl font-bold text-gray-900"><%= @raw_material.products.count %></p>
+                </div>
+                <div class="bg-white rounded-lg p-3 text-center">
+                  <p class="text-sm text-gray-500">Total Cost</p>
+                  <p class="text-2xl font-bold text-gray-900">
+                    <%= number_to_currency(@raw_material.cost_per_unit * @raw_material.stock) %>
+                  </p>
+                </div>
+              </div>
+              <div class="bg-white rounded-lg p-3">
+                <p class="text-sm text-gray-500 mb-2">Used in Products</p>
+                <div class="space-y-2">
+                  <% @raw_material.products.limit(3).each do |product| %>
+                    <%= link_to product_path(product), class: "block hover:bg-gray-50 rounded p-2 -mx-2" do %>
+                      <div class="flex justify-between items-center">
+                        <div>
+                          <p class="text-sm font-medium text-gray-900"><%= product.name %></p>
+                          <p class="text-xs text-gray-500">
+                            <%= @raw_material.product_raw_materials.find_by(product_id: product.id).quantity_required %> <%= @raw_material.unit %> required
+                          </p>
+                        </div>
+                        <div class="flex items-center">
+                          <span class="text-sm font-medium text-gray-900">
+                            <%= number_to_currency(@raw_material.cost_per_unit * @raw_material.product_raw_materials.find_by(product_id: product.id).quantity_required) %>
+                          </span>
+                          <svg class="w-4 h-4 ml-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                          </svg>
+                        </div>
+                      </div>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="bg-gray-50 px-6 py-4 rounded-b-2xl border-t border-gray-200">
+      <div class="flex justify-between items-center">
+        <div class="flex space-x-4">
+          <%= link_to raw_materials_path, class: "text-gray-500 hover:text-gray-700 font-medium flex items-center" do %>
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Back to Raw Materials
+          <% end %>
+        </div>
+        <div class="flex space-x-4">
+          <%= link_to edit_raw_material_path(@raw_material), class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-150" do %>
+            <span class="flex items-center">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+              </svg>
+              Edit Material
+            </span>
+          <% end %>
+          <%= button_to @raw_material, method: :delete, class: "bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-150",
+              data: { confirm: "Are you sure you want to delete this raw material?" } do %>
+            <span class="flex items-center">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+              Delete Material
+            </span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

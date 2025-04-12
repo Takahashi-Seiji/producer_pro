@@ -1,0 +1,108 @@
+<p style="color: green"><%= notice %></p>
+
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Orders</h1>
+    <%= link_to new_order_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+      </svg>
+      New Order
+    <% end %>
+  </div>
+
+  <!-- Search Form -->
+  <div class="bg-white rounded-lg shadow p-6 mb-6">
+    <%= form_with url: orders_path, method: :get, class: "space-y-4", data: { turbo_frame: "orders_list" } do |f| %>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <%= f.label :search, "Search by Client", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.text_field :search, value: params[:search], class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+        </div>
+
+        <div>
+          <%= f.label :status, class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.select :status,
+              Order.statuses.keys.map { |s| [s.titleize, s] },
+              { include_blank: 'All Statuses', selected: params[:status] },
+              class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+        </div>
+
+        <div>
+          <%= f.label :start_date, "From", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.date_field :start_date, value: params[:start_date], class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+        </div>
+
+        <div>
+          <%= f.label :end_date, "To", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.date_field :end_date, value: params[:end_date], class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-3">
+        <%= link_to "Clear", orders_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        <%= f.submit "Search", class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Orders List -->
+  <%= turbo_frame_tag "orders_list" do %>
+    <div class="bg-white shadow overflow-hidden sm:rounded-md">
+      <ul role="list" class="divide-y divide-gray-200">
+        <% if @orders.any? %>
+          <% @orders.each do |order| %>
+            <li class="hover:bg-gray-50">
+              <%= link_to order_path(order), class: "block" do %>
+                <div class="px-4 py-4 sm:px-6">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <p class="text-sm font-medium text-blue-600 truncate">
+                        <%= order.client.name %>
+                      </p>
+                      <div class="ml-4">
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium
+                          <%= case order.status
+                              when 'pending' then 'bg-yellow-100 text-yellow-800'
+                              when 'confirmed' then 'bg-blue-100 text-blue-800'
+                              when 'delivered' then 'bg-green-100 text-green-800'
+                              when 'cancelled' then 'bg-red-100 text-red-800'
+                              end %>">
+                          <%= order.status.titleize %>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="ml-2 flex-shrink-0 flex">
+                      <p class="text-sm text-gray-500">
+                        Delivery: <%= order.delivery_date.strftime("%b %d, %Y") %>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="mt-2 sm:flex sm:justify-between">
+                    <div class="sm:flex">
+                      <p class="flex items-center text-sm text-gray-500">
+                        <%= pluralize(order.order_items.count, 'item') %> •
+                        Total: <%= number_to_currency(order.total_price) %>
+                      </p>
+                    </div>
+                    <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                      <p>
+                        Created <%= time_ago_in_words(order.created_at) %> ago
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </li>
+          <% end %>
+        <% else %>
+          <li class="px-4 py-8">
+            <div class="text-center">
+              <p class="text-sm text-gray-500">No orders found matching your criteria</p>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,101 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-8">Inventory Management</h1>
+
+    <div class="space-y-8">
+      <!-- Products Section -->
+      <div class="bg-white rounded-2xl shadow-md p-6"
+           data-controller="inventory-search"
+           data-inventory-search-url-value="<%= dashboard_inventory_path %>"
+           data-inventory-search-section-value="products">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div class="flex items-center">
+            <svg class="w-6 h-6 text-blue-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <h2 class="text-xl font-semibold text-gray-900">Products</h2>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <!-- Search Bar -->
+            <%= form_with url: dashboard_inventory_path, method: :get, 
+                class: "flex-1",
+                data: { 
+                  inventory_search_target: "form",
+                  action: "input->inventory-search#inputChanged"
+                } do |f| %>
+              <%= f.hidden_field :section, value: "products" %>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <%= f.text_field :search,
+                    placeholder: "Search products...",
+                    class: "block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
+              </div>
+            <% end %>
+            
+            <%= link_to new_product_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 hover:scale-105" do %>
+              <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              New Product
+            <% end %>
+          </div>
+        </div>
+
+        <%= turbo_frame_tag "products_list" do %>
+          <%= render "dashboard/products_table", products: @products %>
+        <% end %>
+      </div>
+
+      <!-- Raw Materials Section -->
+      <div class="bg-white rounded-2xl shadow-md p-6"
+           data-controller="inventory-search"
+           data-inventory-search-url-value="<%= dashboard_inventory_path %>"
+           data-inventory-search-section-value="materials">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div class="flex items-center">
+            <svg class="w-6 h-6 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <h2 class="text-xl font-semibold text-gray-900">Raw Materials</h2>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <!-- Search Bar -->
+            <%= form_with url: dashboard_inventory_path, method: :get,
+                class: "flex-1",
+                data: { 
+                  inventory_search_target: "form",
+                  action: "input->inventory-search#inputChanged"
+                } do |f| %>
+              <%= f.hidden_field :section, value: "materials" %>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <%= f.text_field :search,
+                    placeholder: "Search materials...",
+                    class: "block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
+              </div>
+            <% end %>
+            
+            <%= link_to new_raw_material_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 hover:scale-105" do %>
+              <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              New Material
+            <% end %>
+          </div>
+        </div>
+
+        <%= turbo_frame_tag "materials_list" do %>
+          <%= render "dashboard/materials_table", raw_materials: @raw_materials %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Raw materials</h1>
+
+<div id="raw_materials">
+  <% @raw_materials.each do |raw_material| %>
+    <%= render raw_material %>
+    <p>
+      <%= link_to "Show this raw material", raw_material %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New raw material", new_raw_material_path %>

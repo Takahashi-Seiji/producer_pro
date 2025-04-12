@@ -1,0 +1,37 @@
+<%= form_with url: dashboard_path, method: :get, data: { turbo_frame: "clients_list", turbo_action: "advance" }, class: "space-y-4" do |f| %>
+  <div class="flex items-center space-x-4">
+    <div class="flex-1">
+      <label for="search" class="block text-sm font-medium text-gray-700">Search Clients</label>
+      <div class="mt-1 relative rounded-md shadow-sm">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <%= f.text_field :search, 
+            value: params[:search],
+            class: "focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md",
+            placeholder: "Search by name or email..." %>
+      </div>
+    </div>
+
+    <div>
+      <label for="sort" class="block text-sm font-medium text-gray-700">Sort By</label>
+      <div class="mt-1">
+        <%= f.select :sort, 
+            options_for_select([
+              ['Name (A-Z)', 'name_asc'],
+              ['Name (Z-A)', 'name_desc'],
+              ['Most Orders', 'orders_desc'],
+              ['Highest Revenue', 'revenue_desc']
+            ], params[:sort]),
+            { include_blank: 'Select order...' },
+            class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" %>
+      </div>
+    </div>
+
+    <div class="flex items-end">
+      <%= f.submit "Search", class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    </div>
+  </div>
+<% end %> 

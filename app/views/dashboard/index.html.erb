@@ -1,0 +1,131 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-8">Dashboard</h1>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <!-- Recent Orders Card -->
+      <div class="bg-white rounded-2xl shadow-md p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">Recent Orders</h2>
+          <span class="text-sm text-gray-500"><%= @recent_orders.count %> total</span>
+        </div>
+        <div class="h-64 overflow-y-auto">
+          <% if @recent_orders.any? %>
+            <ul class="space-y-4">
+              <% @recent_orders.each do |order| %>
+                <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div>
+                    <p class="text-sm font-medium text-gray-900"><%= order.client.name %></p>
+                    <p class="text-xs text-gray-500"><%= order.delivery_date.strftime("%B %d, %Y") %></p>
+                  </div>
+                  <span class="px-2 py-1 text-xs font-medium rounded-full <%= order.status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
+                    <%= order.status.titleize %>
+                  </span>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-sm text-gray-500 text-center py-4">No recent orders</p>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Low Stock Products Card -->
+      <div class="bg-white rounded-2xl shadow-md p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">Low Stock Products</h2>
+          <span class="text-sm text-gray-500"><%= @low_stock_products.count %> items</span>
+        </div>
+        <div class="h-64 overflow-y-auto">
+          <% if @low_stock_products.any? %>
+            <ul class="space-y-4">
+              <% @low_stock_products.each do |product| %>
+                <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div>
+                    <p class="text-sm font-medium text-gray-900"><%= product.name %></p>
+                    <p class="text-xs text-gray-500">Stock: <%= product.stock %> <%= product.unit %></p>
+                  </div>
+                  <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                    Low Stock
+                  </span>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-sm text-gray-500 text-center py-4">No low stock products</p>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Upcoming Deliveries Card -->
+      <div class="bg-white rounded-2xl shadow-md p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-gray-900">Upcoming Deliveries</h2>
+          <span class="text-sm text-gray-500">Next 5 days</span>
+        </div>
+        <div class="h-64 overflow-y-auto">
+          <% if @upcoming_deliveries.any? %>
+            <ul class="space-y-4">
+              <% @upcoming_deliveries.each do |delivery| %>
+                <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div>
+                    <p class="text-sm font-medium text-gray-900"><%= delivery.client.name %></p>
+                    <p class="text-xs text-gray-500"><%= delivery.delivery_date.strftime("%B %d, %Y") %></p>
+                  </div>
+                  <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                    <%= delivery.status.titleize %>
+                  </span>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-sm text-gray-500 text-center py-4">No upcoming deliveries</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clients Section -->
+    <div class="bg-white rounded-2xl shadow-md p-6">
+      <!-- Header Section -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div class="flex items-center">
+          <svg class="w-6 h-6 text-purple-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <h2 class="text-xl font-semibold text-gray-900">Clients</h2>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <!-- Search Form -->
+          <%= form_with url: dashboard_clients_path, method: :get, data: { turbo_frame: "clients_list" }, class: "flex-1" do |f| %>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <%= f.text_field :search,
+                  value: params[:search],
+                  placeholder: "Search clients...",
+                  class: "block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500",
+                  data: { action: "input->search#submit" } %>
+            </div>
+          <% end %>
+          
+          <%= link_to new_client_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 hover:scale-105" do %>
+            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            New Client
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Clients Table -->
+      <%= turbo_frame_tag "clients_list" do %>
+        <%= render "dashboard/clients_table", clients: @clients %>
+      <% end %>
+    </div>
+  </div>
+</div>
