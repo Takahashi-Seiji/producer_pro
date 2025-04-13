@@ -1,3 +1,9 @@
 //= link_tree ../images
 //= link_tree ../builds
 //= link_tree ../../../vendor/javascript .js
+//= link_tree ../../javascript/controllers .js
+//= link controllers/application.js
+//= link controllers/clients_search_controller.js
+//= link controllers/hello_controller.js
+//= link controllers/index.js
+//= link controllers/orders_controller.js
