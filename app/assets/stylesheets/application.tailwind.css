@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .simple-calendar {
+    @apply w-full overflow-x-auto;
+  }
+
+  .simple-calendar .calendar-heading {
+    @apply flex justify-between items-center p-4 text-gray-700;
+  }
+
+  .simple-calendar .calendar-title {
+    @apply text-xl font-semibold;
+  }
+
+  .simple-calendar .calendar-nav {
+    @apply flex items-center space-x-4;
+  }
+
+  .simple-calendar table {
+    @apply w-full border-collapse bg-white;
+  }
+
+  .simple-calendar th {
+    @apply p-4 text-sm font-medium text-gray-700 border border-gray-200 bg-gray-50;
+  }
+
+  .simple-calendar td {
+    @apply p-0 border border-gray-200;
+  }
+
+  .simple-calendar .day {
+    @apply min-h-[8rem] relative;
+  }
+
+  .simple-calendar .wday-0 {
+    @apply text-red-600;
+  }
+
+  .simple-calendar .wday-6 {
+    @apply text-blue-600;
+  }
+
+  .simple-calendar .today {
+    @apply bg-blue-50 ring-2 ring-blue-200;
+  }
+
+  .simple-calendar .prev-month,
+  .simple-calendar .next-month {
+    @apply bg-gray-50;
+  }
+}
