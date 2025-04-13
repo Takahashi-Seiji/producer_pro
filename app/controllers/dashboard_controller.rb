@@ -56,7 +56,7 @@ class DashboardController < ApplicationController
   end
   
   def orders
-    @orders = Order.includes(:client).order(created_at: :desc)
+    @orders = Order.includes(:client, :order_items).order(created_at: :desc)
     
     # Apply filters
     @orders = @orders.joins(:client).where("LOWER(clients.name) LIKE ?", "%#{params[:search].downcase}%") if params[:search].present?

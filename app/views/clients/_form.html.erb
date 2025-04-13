@@ -1,6 +1,6 @@
-<%= form_with(model: client, class: "space-y-6") do |form| %>
+<%= form_with(model: client, class: "space-y-8") do |form| %>
   <% if client.errors.any? %>
-    <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+    <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded-xl shadow-sm">
       <div class="flex">
         <div class="flex-shrink-0">
           <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -23,55 +23,71 @@
     </div>
   <% end %>
 
-  <div class="bg-white rounded-2xl shadow-md p-6">
-    <div class="space-y-6">
+  <div class="bg-white rounded-2xl shadow-lg p-8">
+    <div class="space-y-8">
       <!-- Basic Information Section -->
-      <div>
-        <h3 class="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">Basic Information</h3>
+      <div class="bg-gray-50 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          Basic Information
+        </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <%= form.label :name, class: "block text-sm font-medium text-gray-700 mb-1" %>
             <%= form.text_field :name, 
-                class: "w-full rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2 text-sm bg-white text-gray-800 placeholder-gray-400 transition-all duration-150" %>
+                class: "w-full rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none px-4 py-2.5 text-sm bg-white text-gray-800 placeholder-gray-400 transition-all duration-150" %>
           </div>
 
           <div>
             <%= form.label :email, class: "block text-sm font-medium text-gray-700 mb-1" %>
             <%= form.email_field :email, 
-                class: "w-full rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2 text-sm bg-white text-gray-800 placeholder-gray-400 transition-all duration-150" %>
+                class: "w-full rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none px-4 py-2.5 text-sm bg-white text-gray-800 placeholder-gray-400 transition-all duration-150" %>
           </div>
 
           <div>
             <%= form.label :phone, class: "block text-sm font-medium text-gray-700 mb-1" %>
             <%= form.telephone_field :phone, 
-                class: "w-full rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2 text-sm bg-white text-gray-800 placeholder-gray-400 transition-all duration-150" %>
+                class: "w-full rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none px-4 py-2.5 text-sm bg-white text-gray-800 placeholder-gray-400 transition-all duration-150" %>
           </div>
         </div>
       </div>
 
       <!-- Address Section -->
-      <div>
-        <h3 class="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">Address</h3>
+      <div class="bg-gray-50 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          Address
+        </h3>
         <div>
           <%= form.label :address, class: "block text-sm font-medium text-gray-700 mb-1" %>
           <%= form.text_area :address, rows: 3,
-              class: "w-full rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2 text-sm bg-white text-gray-800 placeholder-gray-400 transition-all duration-150" %>
+              class: "w-full rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none px-4 py-2.5 text-sm bg-white text-gray-800 placeholder-gray-400 transition-all duration-150" %>
         </div>
       </div>
 
       <!-- Additional Information Section -->
-      <div>
-        <h3 class="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">Additional Information</h3>
+      <div class="bg-gray-50 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+          </svg>
+          Additional Information
+        </h3>
         <div>
           <%= form.label :notes, class: "block text-sm font-medium text-gray-700 mb-1" %>
           <%= form.text_area :notes, rows: 4,
-              class: "w-full rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none px-4 py-2 text-sm bg-white text-gray-800 placeholder-gray-400 transition-all duration-150" %>
+              class: "w-full rounded-xl border-2 border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none px-4 py-2.5 text-sm bg-white text-gray-800 placeholder-gray-400 transition-all duration-150" %>
         </div>
       </div>
 
       <!-- Submit Button -->
       <div class="flex justify-end">
-        <%= form.submit class: "inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-150 hover:scale-105" %>
+        <%= form.submit class: "inline-flex items-center px-6 py-3 text-base font-medium rounded-xl shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-150 hover:scale-105" %>
       </div>
     </div>
   </div>

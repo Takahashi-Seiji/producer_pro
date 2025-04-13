@@ -26,6 +26,7 @@ class OrdersController < ApplicationController
 
   # GET /orders/1 or /orders/1.json
   def show
+    @order = Order.includes(:client, order_items: :product).find(params[:id])
   end
 
   # GET /orders/new
@@ -41,6 +42,7 @@ class OrdersController < ApplicationController
   # POST /orders or /orders.json
   def create
     @order = Order.new(order_params)
+    @order.total_price = @order.order_items.sum { |item| item.quantity * item.unit_price }
 
     respond_to do |format|
       if @order.save
@@ -71,7 +73,13 @@ class OrdersController < ApplicationController
     @order.destroy!
 
     respond_to do |format|
-      format.html { redirect_to orders_url, notice: "Order was successfully destroyed." }
+      format.turbo_stream { 
+        render turbo_stream: [
+          turbo_stream.remove(@order),
+          turbo_stream.update("flash", partial: "shared/flash", locals: { flash: { notice: "Order was successfully destroyed." } })
+        ]
+      }
+      format.html { redirect_to dashboard_orders_url, notice: "Order was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -79,7 +87,8 @@ class OrdersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_order
-      @order = Order.find(params[:id])
+      @order = Order.includes(:client, order_items: :product).find_by(id: params[:id])
+      redirect_to dashboard_orders_url, alert: "Order not found." unless @order
     end
 
     # Only allow a list of trusted parameters through.
